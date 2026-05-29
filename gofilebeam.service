@@ -1,0 +1,32 @@
+[Unit]
+Description=GoFileBeam File Sharing Service
+After=network.target
+
+[Service]
+Type=simple
+User=gofilebeam
+Group=gofilebeam
+WorkingDirectory=/opt/gofilebeam
+Environment="GOFILEBEAM_STORAGE_PATH=/var/gofilebeam/uploads"
+Environment="GOFILEBEAM_MAX_STORAGE_GB=1"
+Environment="GOFILEBEAM_PORT=8080"
+Environment="GOFILEBEAM_HOST=0.0.0.0"
+ExecStart=/opt/gofilebeam/gofilebeam
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=gofilebeam
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/var/gofilebeam/uploads
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+[Install]
+WantedBy=multi-user.target

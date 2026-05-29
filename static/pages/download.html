@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Download File - GoFileBeam</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md antialiased">
+    <!-- TopAppBar -->
+    <header class="bg-surface docked full-width top-0 sticky z-50">
+        <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+            <div class="flex items-center gap-2">
+                <a href="/" class="text-headline-lg font-headline-lg font-bold text-primary hover:opacity-80 transition-opacity">GoFileBeam</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center py-12 px-6">
+        <div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-lg border border-outline-variant p-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-container rounded-full mb-4">
+                    <span class="material-symbols-outlined text-primary text-3xl" data-weight="fill">download</span>
+                </div>
+                <h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Download File</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant" id="statusMessage">Preparing your download...</p>
+            </div>
+
+            <!-- Password Form (hidden by default) -->
+            <div class="hidden" id="passwordForm">
+                <div class="mb-6">
+                    <label class="block font-label-md text-label-md text-on-surface mb-2">This file is password protected</label>
+                    <input 
+                        class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" 
+                        placeholder="Enter password" 
+                        type="password" 
+                        id="passwordInput"
+                        autocomplete="off"/>
+                </div>
+                <button 
+                    class="w-full bg-primary-container text-on-primary font-label-md text-label-md py-3 px-6 rounded-full hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                    id="downloadBtn">
+                    <span class="material-symbols-outlined">download</span>
+                    Download
+                </button>
+                <p class="text-body-sm text-error text-center mt-4 hidden" id="errorMessage"></p>
+            </div>
+
+            <!-- Download Progress -->
+            <div class="hidden" id="downloadProgress">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="spinner"></div>
+                    <p class="font-body-md text-body-md text-on-surface">Downloading...</p>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div class="hidden" id="successMessage">
+                <div class="flex flex-col items-center gap-4">
+                    <span class="material-symbols-outlined text-primary text-5xl" data-weight="fill">check_circle</span>
+                    <p class="font-body-md text-body-md text-on-surface text-center">Download started! Check your downloads folder.</p>
+                </div>
+            </div>
+
+            <!-- Error Display -->
+            <div class="hidden" id="errorDisplay">
+                <div class="flex flex-col items-center gap-4">
+                    <span class="material-symbols-outlined text-error text-5xl">error</span>
+                    <p class="font-body-md text-body-md text-on-surface text-center" id="errorText"></p>
+                    <a href="/" class="bg-primary-container text-on-primary font-label-md text-label-md py-3 px-6 rounded-full hover:opacity-90 transition-opacity">
+                        Go to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface docked full-width bottom-0 border-t border-outline-variant mt-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center w-full px-6 py-8 max-w-7xl mx-auto gap-4">
+            <span class="text-label-md font-bold text-on-surface">© 2024 GoFileBeam. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script>
+        // Get file ID from URL
+        const pathParts = window.location.pathname.split('/');
+        const fileId = pathParts[pathParts.length - 1];
+
+        const passwordForm = document.getElementById('passwordForm');
+        const passwordInput = document.getElementById('passwordInput');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const downloadProgress = document.getElementById('downloadProgress');
+        const successMessage = document.getElementById('successMessage');
+        const errorDisplay = document.getElementById('errorDisplay');
+        const errorText = document.getElementById('errorText');
+
+        // Try to download without password first
+        async function attemptDownload(password = '') {
+            try {
+                const url = `/api/download/${fileId}${password ? '?password=' + encodeURIComponent(password) : ''}`;
+                const response = await fetch(url);
+
+                if (response.status === 401) {
+                    // Password required or wrong password
+                    if (password) {
+                        // Wrong password provided
+                        downloadProgress.classList.add('hidden');
+                        passwordForm.classList.remove('hidden');
+                        errorMessage.textContent = 'Incorrect password. Please try again.';
+                        errorMessage.classList.remove('hidden');
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                        return;
+                    } else {
+                        // Password required
+                        statusMessage.textContent = 'Password required';
+                        passwordForm.classList.remove('hidden');
+                        passwordInput.focus();
+                        return;
+                    }
+                }
+
+                if (response.status === 404) {
+                    throw new Error('File not found. It may have been deleted or the link is incorrect.');
+                }
+
+                if (response.status === 410) {
+                    throw new Error('File has expired. It has either been downloaded too many times or the time limit has passed.');
+                }
+
+                if (!response.ok) {
+                    throw new Error('Download failed. Please try again later.');
+                }
+
+                // Download the file
+                const blob = await response.blob();
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'download';
+                
+                if (contentDisposition) {
+                    const matches = /filename="([^"]+)"/.exec(contentDisposition);
+                    if (matches && matches[1]) {
+                        filename = matches[1];
+                    }
+                }
+
+                // Create download link
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(downloadUrl);
+
+                // Show success
+                passwordForm.classList.add('hidden');
+                downloadProgress.classList.add('hidden');
+                successMessage.classList.remove('hidden');
+                statusMessage.textContent = 'Download complete!';
+
+            } catch (error) {
+                console.error('Download error:', error);
+                passwordForm.classList.add('hidden');
+                downloadProgress.classList.add('hidden');
+                errorDisplay.classList.remove('hidden');
+                errorText.textContent = error.message;
+                statusMessage.textContent = 'Download failed';
+            }
+        }
+
+        // Download button click handler
+        downloadBtn.addEventListener('click', async () => {
+            const password = passwordInput.value.trim();
+            
+            if (!password) {
+                errorMessage.textContent = 'Please enter a password';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            errorMessage.classList.add('hidden');
+            passwordForm.classList.add('hidden');
+            downloadProgress.classList.remove('hidden');
+            statusMessage.textContent = 'Verifying password...';
+
+            await attemptDownload(password);
+        });
+
+        // Allow Enter key to submit
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                downloadBtn.click();
+            }
+        });
+
+        // Try download on page load
+        attemptDownload();
+    </script>
+</body>
+</html>

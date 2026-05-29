@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles that were in the HTML */
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.material-symbols-outlined[data-weight="fill"] {
+    font-variation-settings: 'FILL' 1;
+}
+
+.drop-zone {
+    transition: all 0.3s ease;
+}
+
+.drop-zone.dragover {
+    background-color: #f0f3ff;
+    border-color: #0060df;
+}
+
+.ambient-shadow {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.file-item-enter {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.file-item-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.file-item-exit {
+    opacity: 1;
+}
+
+.file-item-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.progress-bar {
+    transition: width 0.3s ease;
+}
+
+.toast {
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

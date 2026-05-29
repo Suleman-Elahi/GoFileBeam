@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+gofilebeam
+/gofilebeam
+
+# Environment
+.env
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Temporary test files
+test*.sh
+*_FIX.md
+STATUS.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

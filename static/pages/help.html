@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Help & Support - GoFileBeam</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="/css/styles.css" rel="stylesheet"/>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        details summary {
+            cursor: pointer;
+        }
+        
+        details summary::-webkit-details-marker {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md antialiased">
+    <!-- TopAppBar -->
+    <header class="bg-surface docked full-width top-0 sticky z-50">
+        <div class="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+            <div class="flex items-center gap-2">
+                <a href="/" class="text-headline-lg font-headline-lg font-bold text-primary hover:opacity-80 transition-opacity">GoFileBeam</a>
+                <span class="text-label-md text-on-surface-variant hidden md:inline">/ Help</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/" class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Home</a>
+                <a href="/pages/privacy.html" class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Privacy</a>
+                <a href="/pages/terms.html" class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms</a>
+                <a href="/pages/security.html" class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Security</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow py-12 px-6 max-w-4xl mx-auto">
+        <div class="mb-8">
+            <h1 class="font-headline-xl text-headline-xl text-on-surface mb-4">Help & Support</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">Get help with using GoFileBeam and find answers to common questions.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-surface-container-low rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-primary text-2xl">upload_file</span>
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Uploading Files</h3>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface">Learn how to upload and share files securely with GoFileBeam.</p>
+            </div>
+            
+            <div class="bg-surface-container-low rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-primary text-2xl">download</span>
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Downloading Files</h3>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface">Instructions for downloading files shared with you.</p>
+            </div>
+            
+            <div class="bg-surface-container-low rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-primary text-2xl">lock</span>
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Security & Privacy</h3>
+                </div>
+                <p class="font-body-md text-body-md text-on-surface">Information about our security features and privacy protections.</p>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <h2 class="font-headline-lg text-headline-lg text-on-surface mb-6">Frequently Asked Questions</h2>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">How do I upload files?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">To upload files to GoFileBeam:</p>
+                    <ol class="list-decimal pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface">Drag and drop files onto the upload area, or click "Select Files" to choose files from your computer</li>
+                        <li class="font-body-md text-body-md text-on-surface">Choose an expiration option (how long the file will be available)</li>
+                        <li class="font-body-md text-body-md text-on-surface">Optionally, add a password for extra security</li>
+                        <li class="font-body-md text-body-md text-on-surface">Click "Upload" to start the upload process</li>
+                        <li class="font-body-md text-body-md text-on-surface">Once uploaded, you'll receive a shareable link</li>
+                    </ol>
+                </div>
+            </details>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">How do I download files shared with me?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">To download files shared with you:</p>
+                    <ol class="list-decimal pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface">Click on the download link provided by the sender</li>
+                        <li class="font-body-md text-body-md text-on-surface">If the file is password-protected, enter the password when prompted</li>
+                        <li class="font-body-md text-body-md text-on-surface">The file will automatically download to your computer</li>
+                        <li class="font-body-md text-body-md text-on-surface">Save the file to your desired location</li>
+                    </ol>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Note: Some browsers may ask for confirmation before downloading.</p>
+                </div>
+            </details>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">What are the file size limits?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">GoFileBeam has the following limits:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface"><strong>Maximum file size:</strong> 100 MB per file (configurable by server administrator)</li>
+                        <li class="font-body-md text-body-md text-on-surface"><strong>Total storage:</strong> 1 GB total storage (configurable by server administrator)</li>
+                        <li class="font-body-md text-body-md text-on-surface"><strong>File types:</strong> All file types are supported</li>
+                        <li class="font-body-md text-body-md text-on-surface"><strong>Multiple files:</strong> You can upload multiple files at once</li>
+                    </ul>
+                    <p class="font-body-md text-body-md text-on-surface-variant">These limits help ensure fast and reliable service for all users.</p>
+                </div>
+            </details>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">How does password protection work?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">When you password-protect a file:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface">The file is encrypted with AES-256-GCM encryption before upload</li>
+                        <li class="font-body-md text-body-md text-on-surface">The encryption key is derived from your password</li>
+                        <li class="font-body-md text-body-md text-on-surface">We never see your password or the unencrypted file contents</li>
+                        <li class="font-body-md text-body-md text-on-surface">To download, recipients must enter the exact same password</li>
+                        <li class="font-body-md text-body-md text-on-surface">If the password is lost, the file cannot be recovered</li>
+                    </ul>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Tip: Use a strong, unique password and share it securely with intended recipients.</p>
+                </div>
+            </details>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">How long are files stored?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">Files are stored based on your chosen expiration option:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface"><strong>1 Download or 1 Day:</strong> File expires after 1 download or 24 hours</li>
+                        <li class="font-body-md text-body-md text-on-surface"><strong>10 Downloads or 7 Days:</strong> File expires after 10 downloads or 7 days</li>
+                        <li class="font-body-md text-body-md text-on-surface"><strong>100 Downloads or 30 Days:</strong> File expires after 100 downloads or 30 days</li>
+                    </ul>
+                    <p class="font-body-md text-body-md text-on-surface">Whichever limit is reached first triggers file deletion. Expired files are permanently and securely deleted.</p>
+                </div>
+            </details>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Can I delete files before they expire?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">Currently, GoFileBeam doesn't provide a way to manually delete files before their expiration date. This is by design to ensure:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface">Files remain available to recipients as promised</li>
+                        <li class="font-body-md text-body-md text-on-surface">Consistent behavior for all users</li>
+                        <li class="font-body-md text-body-md text-on-surface">Simplified user experience</li>
+                    </ul>
+                    <p class="font-body-md text-body-md text-on-surface">If you need to prevent access to a file, you can:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface">Ask recipients to delete their copies</li>
+                        <li class="font-body-md text-body-md text-on-surface">Stop sharing the download link</li>
+                        <li class="font-body-md text-body-md text-on-surface">Wait for the file to expire automatically</li>
+                    </ul>
+                </div>
+            </details>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Is there a mobile app?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">GoFileBeam is a web-based service that works on all modern devices:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface"><strong>Desktop computers:</strong> Full functionality in all modern browsers</li>
+                        <li class="font-body-md text-body-md text-on-surface"><strong>Tablets:</strong> Responsive design works on iPad and Android tablets</li>
+                        <li class="font-body-md text-body-md text-on-surface"><strong>Smartphones:</strong> Mobile-optimized interface for iPhone and Android</li>
+                    </ul>
+                    <p class="font-body-md text-body-md text-on-surface">You can access GoFileBeam from any device with a web browser. No app installation is required.</p>
+                </div>
+            </details>
+
+            <details class="bg-surface-container-low rounded-xl p-6 group">
+                <summary class="flex items-center justify-between cursor-pointer">
+                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">What happens if I lose the download link?</h3>
+                    <span class="material-symbols-outlined text-on-surface-variant group-open:rotate-180 transition-transform">expand_more</span>
+                </summary>
+                <div class="mt-4 space-y-4">
+                    <p class="font-body-md text-body-md text-on-surface">If you lose a download link:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface">Check your browser history for the link</li>
+                        <li class="font-body-md text-body-md text-on-surface">Look for any emails or messages where you might have saved it</li>
+                        <li class="font-body-md text-body-md text-on-surface">Ask the sender to share the link again</li>
+                    </ul>
+                    <p class="font-body-md text-body-md text-on-surface">For security reasons, we cannot:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li class="font-body-md text-body-md text-on-surface">Look up files by filename or sender</li>
+                        <li class="font-body-md text-body-md text-on-surface">Provide download links without the file ID</li>
+                        <li class="font-body-md text-body-md text-on-surface">Recover lost passwords for encrypted files</li>
+                    </ul>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Tip: Save important download links in a secure location.</p>
+                </div>
+            </details>
+        </div>
+
+        <div class="mt-12 bg-surface-container-low rounded-xl p-8">
+            <h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Still Need Help?</h2>
+            <p class="font-body-md text-body-md text-on-surface mb-6">If you didn't find the answer to your question, please contact our support team.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-surface-container rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined text-primary text-2xl">mail</span>
+                        <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Email Support</h3>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface mb-4">Send us an email and we'll respond as soon as possible.</p>
+                    <a href="mailto:support@gofilebeam.com" class="inline-block bg-primary-container text-on-primary font-label-md text-label-md py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+                        support@gofilebeam.com
+                    </a>
+                </div>
+                
+                <div class="bg-surface-container rounded-lg p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-symbols-outlined text-primary text-2xl">bug_report</span>
+                        <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Report a Bug</h3>
+                    </div>
+                    <p class="font-body-md text-body-md text-on-surface mb-4">Found a bug or technical issue? Let us know so we can fix it.</p>
+                    <a href="mailto:bugs@gofilebeam.com" class="inline-block bg-primary-container text-on-primary font-label-md text-label-md py-3 px-6 rounded-lg hover:opacity-90 transition-opacity">
+                        bugs@gofilebeam.com
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface docked full-width bottom-0 border-t border-outline-variant mt-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center w-full px-6 py-8 max-w-7xl mx-auto gap-4">
+            <span class="text-label-md font-bold text-on-surface">© 2024 GoFileBeam. All rights reserved.</span>
+            <nav class="flex items-center gap-6">
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/">Home</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/pages/privacy.html">Privacy</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/pages/terms.html">Terms</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/pages/security.html">Security</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

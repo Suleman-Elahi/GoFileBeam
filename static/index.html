@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>GoFileBeam - Secure File Sharing</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="/css/output.css" rel="stylesheet"/>
+    <link href="/css/styles.css" rel="stylesheet"/>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md text-body-md antialiased">
+    <!-- TopAppBar -->
+    <header class="bg-surface docked full-width top-0 sticky z-50">
+        <div class="flex justify-between items-center w-full px-gutter py-4 max-w-7xl mx-auto">
+            <div class="flex items-center gap-2">
+                <span class="text-headline-lg font-headline-lg font-bold text-primary">GoFileBeam</span>
+                <span class="text-label-md text-on-surface-variant hidden md:inline">Secure File Sharing</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/pages/privacy.html" class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Privacy</a>
+                <a href="/pages/terms.html" class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Terms</a>
+                <a href="/pages/help.html" class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer">Help</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center justify-center py-section-gap px-gutter w-full max-w-7xl mx-auto">
+        <div class="w-full max-w-container-max-width bg-surface-container-lowest rounded-xl ambient-shadow border border-outline-variant p-8 md:p-12 mb-section-gap">
+            <div class="text-center mb-8">
+                <h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">Send files securely</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant">Simple, private file sharing with end-to-end encryption.</p>
+                
+                <!-- Storage Stats -->
+                <div class="mt-6 flex items-center justify-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">storage</span>
+                        <span class="font-mono-sm text-mono-sm text-on-surface" id="storageUsed">0 MB</span>
+                        <span class="font-mono-sm text-mono-sm text-on-surface-variant">/</span>
+                        <span class="font-mono-sm text-mono-sm text-on-surface" id="storageTotal">1 GB</span>
+                    </div>
+                    <div class="w-32 h-2 bg-surface-container-low rounded-full overflow-hidden">
+                        <div class="h-full bg-primary rounded-full" id="storageProgress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drop Zone -->
+            <div class="drop-zone border-2 border-dashed border-outline-variant rounded-xl p-12 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors mb-stack-gap min-h-[240px] relative" id="dropZone">
+                <input class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="fileInput" multiple type="file"/>
+                <div class="text-primary mb-4">
+                    <span class="material-symbols-outlined text-[48px]" data-weight="fill" id="uploadIcon">upload_file</span>
+                </div>
+                <p class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2" id="dropZoneText">Drag and drop files to start sharing</p>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mb-6">or click to select files</p>
+                <button class="bg-primary-container text-on-primary font-label-md text-label-md py-3 px-6 rounded-full hover:opacity-90 transition-opacity flex items-center gap-2" id="selectFilesBtn">
+                    Select Files
+                </button>
+            </div>
+
+            <!-- Upload Progress -->
+            <div class="w-full mb-stack-gap hidden" id="uploadProgressContainer">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-label-md text-label-md text-on-surface">Uploading...</span>
+                    <span class="font-mono-sm text-mono-sm text-on-surface-variant" id="uploadProgressText">0%</span>
+                </div>
+                <div class="w-full h-2 bg-surface-container-low rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full progress-bar" id="uploadProgressBar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- File List -->
+            <div class="w-full mb-stack-gap" id="fileListContainer">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-label-md text-label-md text-on-surface">Selected Files</h3>
+                    <button class="font-body-sm text-body-sm text-error hover:opacity-80 transition-opacity flex items-center gap-1" id="clearAllBtn">
+                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                        Clear All
+                    </button>
+                </div>
+                <div class="flex flex-col gap-2" id="fileList">
+                    <!-- Files will be added here dynamically -->
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div class="w-full flex flex-col md:flex-row gap-4 mb-8">
+                <div class="flex-1">
+                    <label class="block font-label-md text-label-md text-on-surface mb-2">Link expires after</label>
+                    <select class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all appearance-none cursor-pointer" id="expirationSelect">
+                        <option value="1 Download or 1 Day">1 Download or 1 Day</option>
+                        <option value="10 Downloads or 7 Days">10 Downloads or 7 Days</option>
+                        <option value="100 Downloads or 30 Days">100 Downloads or 30 Days</option>
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label class="block font-label-md text-label-md text-on-surface mb-2">Password protection</label>
+                    <input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Optional" type="password" id="passwordInput"/>
+                </div>
+            </div>
+
+            <!-- Action Area -->
+            <div class="flex items-center justify-between pt-4 border-t border-outline-variant">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-surface-container-low text-primary font-mono-sm text-mono-sm border border-primary-fixed-dim">
+                        <span class="material-symbols-outlined text-[16px] mr-1">lock</span> End-to-end Encrypted
+                    </span>
+                </div>
+                <button class="bg-primary-container text-on-primary font-label-md text-label-md py-3 px-8 rounded-full hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" id="uploadBtn" disabled>
+                    Upload
+                </button>
+            </div>
+
+            <!-- Share Link (Hidden by default) -->
+            <div class="mt-8 p-4 bg-surface-container-low rounded-lg border border-outline-variant hidden" id="shareLinkContainer">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-label-md text-label-md text-on-surface">Share Link</span>
+                    <button class="text-primary hover:opacity-80 transition-opacity flex items-center gap-1" id="copyLinkBtn">
+                        <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                        Copy
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg p-3 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" type="text" id="shareLinkInput" readonly/>
+                    <a class="bg-primary-container text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-1" id="downloadLinkBtn" target="_blank">
+                        <span class="material-symbols-outlined text-[16px]">download</span>
+                        Download
+                    </a>
+                </div>
+                <div class="mt-2 flex items-center gap-2 text-body-sm text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[16px]">info</span>
+                    <span id="expirationInfo">Expires after 1 download or 1 day</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface docked full-width bottom-0 border-t border-outline-variant mt-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center w-full px-gutter py-8 max-w-7xl mx-auto gap-4">
+            <span class="text-label-md font-bold text-on-surface">© 2024 GoFileBeam. All rights reserved.</span>
+            <nav class="flex items-center gap-6">
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/pages/terms.html">Terms</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/pages/privacy.html">Privacy</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/pages/security.html">Security</a>
+                <a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors cursor-pointer" href="/pages/help.html">Help</a>
+            </nav>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="fixed bottom-4 right-4 z-50 hidden" id="toast">
+        <div class="bg-surface-container-highest border border-outline-variant rounded-lg p-4 shadow-lg max-w-sm">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary" id="toastIcon">check_circle</span>
+                <div class="flex-1">
+                    <p class="font-body-md text-body-md text-on-surface" id="toastMessage"></p>
+                </div>
+                <button class="text-outline-variant hover:text-on-surface transition-colors" id="toastClose">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+/* GoFileBeam Custom Styles */
+
+/* File upload animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.uploading {
+    animation: pulse 2s infinite;
+}
+
+/* Progress bar animations */
+@keyframes progress {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.progress-animated {
+    animation: progress 2s ease-in-out infinite;
+}
+
+/* Toast animations */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast-enter {
+    animation: slideInRight 0.3s ease;
+}
+
+.toast-exit {
+    animation: slideOutRight 0.3s ease;
+}
+
+/* File list animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.file-item {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Loading spinner */
+.spinner {
+    border: 3px solid #f0f3ff;
+    border-top: 3px solid #0060df;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container-max-width {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .section-gap {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+    
+    .stack-gap {
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles for keyboard navigation */
+:focus-visible {
+    outline: 2px solid #0060df;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .border-outline-variant {
+        border-color: #000000 !important;
+    }
+    
+    .text-on-surface {
+        color: #000000 !important;
+    }
+    
+    .bg-surface-container-low {
+        background-color: #ffffff !important;
+    }
+}
