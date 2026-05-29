@@ -2,6 +2,8 @@
 
 A lightweight, secure file sharing service written in Go. Features end-to-end encryption, expiration policies, and storage quota management.
 
+![GoFileBeam Screenshot](docs/gofilebeam.png)
+
 ## Features
 
 - **Secure File Sharing**: Upload files with optional password protection
