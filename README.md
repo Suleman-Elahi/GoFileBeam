@@ -149,7 +149,6 @@ GoFileBeam implements multiple layers of security to protect your files and prev
 **For detailed information, see:**
 - [docs/QUICKSTART.md](docs/QUICKSTART.md) - Quick start guide
 - [docs/SECURITY.md](docs/SECURITY.md) - Complete security documentation
-- [docs/GIT_SETUP.md](docs/GIT_SETUP.md) - Git configuration for contributors
 
 ## Deployment
 
@@ -207,7 +206,6 @@ Additional documentation is available in the [`docs/`](docs/) directory:
 
 - **[QUICKSTART.md](docs/QUICKSTART.md)** - Get started in 5 minutes
 - **[SECURITY.md](docs/SECURITY.md)** - Complete security documentation
-- **[GIT_SETUP.md](docs/GIT_SETUP.md)** - Git configuration guide for contributors
 
 ## License
 
