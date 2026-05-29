@@ -15,14 +15,12 @@ all: build
 # Build the binary
 build:
 	@echo "Building $(BINARY_NAME)..."
-	go build $(LDFLAGS) -o $(BINARY_NAME) ./cmd/gofilebeam
-	@echo "Build complete: ./$(BINARY_NAME)"
+	@./build.sh
 
 # Build for production (stripped, optimized)
 build-prod:
 	@echo "Building production binary..."
-	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-s -w" -o $(BINARY_NAME) ./cmd/gofilebeam
-	@echo "Production build complete: ./$(BINARY_NAME)"
+	@./build.sh
 
 # Clean build artifacts
 clean:
@@ -30,6 +28,7 @@ clean:
 	rm -f $(BINARY_NAME)
 	rm -rf dist/
 	rm -rf uploads/
+	rm -rf internal/static/files/
 	rm -f test_file.txt downloaded_* 2>/dev/null || true
 	@echo "Clean complete"
 

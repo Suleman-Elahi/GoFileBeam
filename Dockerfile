@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.21-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
@@ -10,8 +10,11 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o gofilebeam ./cmd/gofilebeam
+# Copy static files for embedding
+RUN cp -r static internal/static/files
+
+# Build the application with optimizations for smaller binary
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o gofilebeam ./cmd/gofilebeam
 
 # Final stage
 FROM alpine:latest
@@ -20,9 +23,8 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
 
-# Copy the binary from builder
+# Copy only the binary from builder (static files are embedded)
 COPY --from=builder /app/gofilebeam .
-COPY --from=builder /app/static ./static
 
 # Create uploads directory
 RUN mkdir -p /uploads

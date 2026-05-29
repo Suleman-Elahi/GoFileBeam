@@ -9,13 +9,13 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"gofilebeam/internal/config"
 	"gofilebeam/internal/security"
+	staticpkg "gofilebeam/internal/static"
 	"gofilebeam/internal/storage"
 )
 
@@ -385,17 +385,17 @@ func (h *Handler) HealthHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// ServeUI serves the HTML UI
+// ServeUI serves the HTML UI from embedded files
 func (h *Handler) ServeUI(w http.ResponseWriter, r *http.Request) {
 	// Serve index.html for root path
 	if r.URL.Path == "/" {
-		http.ServeFile(w, r, filepath.Join("static", "index.html"))
+		h.serveEmbeddedFile(w, r, "files/index.html")
 		return
 	}
 
 	// Check if it's a download page
 	if strings.HasPrefix(r.URL.Path, "/download/") {
-		http.ServeFile(w, r, filepath.Join("static", "pages", "download.html"))
+		h.serveEmbeddedFile(w, r, "files/pages/download.html")
 		return
 	}
 
@@ -410,27 +410,57 @@ func (h *Handler) ServeUI(w http.ResponseWriter, r *http.Request) {
 	// Check if it's a page path
 	for path, file := range staticPages {
 		if r.URL.Path == path || r.URL.Path == path+"/" {
-			http.ServeFile(w, r, filepath.Join("static", "pages", file))
+			h.serveEmbeddedFile(w, r, "files/pages/"+file)
 			return
 		}
 	}
 
 	// Serve static files
-	staticPath := filepath.Join("static", r.URL.Path)
-	if _, err := os.Stat(staticPath); err == nil {
-		http.ServeFile(w, r, staticPath)
+	staticPath := "files" + r.URL.Path
+	if _, err := staticpkg.Files.Open(staticPath); err == nil {
+		h.serveEmbeddedFile(w, r, staticPath)
 		return
 	}
 
 	// Serve from pages directory
-	pagesPath := filepath.Join("static", "pages", r.URL.Path)
-	if _, err := os.Stat(pagesPath); err == nil {
-		http.ServeFile(w, r, pagesPath)
+	pagesPath := "files/pages" + r.URL.Path
+	if _, err := staticpkg.Files.Open(pagesPath); err == nil {
+		h.serveEmbeddedFile(w, r, pagesPath)
 		return
 	}
 
 	// 404 - Not Found
 	http.NotFound(w, r)
+}
+
+// serveEmbeddedFile serves a file from the embedded filesystem
+func (h *Handler) serveEmbeddedFile(w http.ResponseWriter, r *http.Request, path string) {
+	data, err := staticpkg.Files.ReadFile(path)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	// Set content type based on file extension
+	contentType := "text/html; charset=utf-8"
+	if strings.HasSuffix(path, ".css") {
+		contentType = "text/css; charset=utf-8"
+	} else if strings.HasSuffix(path, ".js") {
+		contentType = "application/javascript; charset=utf-8"
+	} else if strings.HasSuffix(path, ".json") {
+		contentType = "application/json; charset=utf-8"
+	} else if strings.HasSuffix(path, ".svg") {
+		contentType = "image/svg+xml"
+	} else if strings.HasSuffix(path, ".ico") {
+		contentType = "image/x-icon"
+	} else if strings.HasSuffix(path, ".png") {
+		contentType = "image/png"
+	} else if strings.HasSuffix(path, ".jpg") || strings.HasSuffix(path, ".jpeg") {
+		contentType = "image/jpeg"
+	}
+
+	w.Header().Set("Content-Type", contentType)
+	w.Write(data)
 }
 
 // SetupRoutes sets up all HTTP routes
