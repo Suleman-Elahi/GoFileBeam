@@ -62,11 +62,10 @@ func main() {
 	handlerWithMiddleware := addSecurityMiddleware(mux, cfg, rateLimiter)
 
 	server := &http.Server{
-		Addr:         fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
-		Handler:      handlerWithMiddleware,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 30 * time.Second,
-		IdleTimeout:  60 * time.Second,
+		Addr:              fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
+		Handler:           handlerWithMiddleware,
+		ReadHeaderTimeout: 10 * time.Second,
+		IdleTimeout:       120 * time.Second,
 	}
 
 	// Print security status
