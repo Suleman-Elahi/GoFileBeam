@@ -79,8 +79,8 @@ type StorageInfoResponse struct {
 
 // UploadHandler handles file uploads
 func (h *Handler) UploadHandler(w http.ResponseWriter, r *http.Request) {
-	// Parse multipart form
-	if err := r.ParseMultipartForm(h.config.MaxFileSize); err != nil {
+	// Parse multipart form (10MB memory buffer, rest spills to temp files on disk)
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		http.Error(w, "Failed to parse form: "+err.Error(), http.StatusBadRequest)
 		return
 	}
