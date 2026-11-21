@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoFileBeam — Self-Hosted Firefox Send Alternative | Secure File Sharing</title>
+<meta name="description" content="GoFileBeam is an open-source, self-hosted alternative to Firefox Send. Share files with end-to-end AES-256-GCM encryption, automatic expiration, and a storage quota you control. Single Go binary, deploy anywhere.">
+<meta name="keywords" content="firefox send alternative, self hosted file sharing, secure file transfer, end-to-end encryption, open source file sharing, Go file server, encrypted file upload, temporary file sharing">
+<meta name="author" content="GoFileBeam">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://github.com/your-org/gofilebeam">
+
+<link rel="icon" type="image/svg+xml" href="../static/favicon.svg">
+<link rel="apple-touch-icon" href="../static/favicon.svg">
+<meta name="theme-color" content="#0060df">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://github.com/your-org/gofilebeam">
+<meta property="og:title" content="GoFileBeam — Self-Hosted Firefox Send Alternative">
+<meta property="og:description" content="Open-source, self-hosted file sharing with end-to-end encryption, automatic expiration, and full control over your data.">
+<meta property="og:image" content="https://raw.githubusercontent.com/your-org/gofilebeam/main/docs/gofilebeam.png">
+<meta property="og:image:width" content="1051">
+<meta property="og:image:height" content="921">
+<meta property="og:site_name" content="GoFileBeam">
+<meta property="og:locale" content="en_US">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GoFileBeam — Self-Hosted Firefox Send Alternative">
+<meta name="twitter:description" content="Open-source, self-hosted file sharing with end-to-end encryption and automatic expiration.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/your-org/gofilebeam/main/docs/gofilebeam.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "GoFileBeam",
+  "applicationCategory": "FileSharingApplication",
+  "operatingSystem": "Linux, macOS, Windows",
+  "description": "An open-source, self-hosted alternative to Firefox Send. Secure file sharing with end-to-end AES-256-GCM encryption, expiration policies, and storage quota management, distributed as a single Go binary.",
+  "softwareVersion": "1.0",
+  "license": "https://opensource.org/licenses/MIT",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "End-to-end AES-256-GCM encryption",
+    "Password-protected downloads",
+    "Automatic expiration by downloads or time",
+    "Configurable storage quota",
+    "Single-binary deployment",
+    "REST API",
+    "Web UI with drag-and-drop upload"
+  ]
+}
+</script>
+
+<style>
+  :root{--primary:#0060df;--primary-dark:#003eaa;--primary-light:#e8f0ff;--bg:#fff;--surface:#f8f9fb;--surface-alt:#eef1f6;--text:#15141a;--text-muted:#5b5b66;--border:#e1e3e8;--success:#10893e;--radius:12px;--max-width:1120px}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--primary);text-decoration:none}
+  a:hover{text-decoration:underline}
+  img{max-width:100%;display:block}
+  .container{width:100%;max-width:var(--max-width);margin:0 auto;padding:0 24px}
+  .skip-link{position:absolute;left:-999px;top:0;background:var(--primary);color:#fff;padding:8px 16px;z-index:100}
+  .skip-link:focus{left:0}
+  header.site-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(8px);border-bottom:1px solid var(--border)}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem;color:var(--text)}
+  .brand img{width:32px;height:32px;border-radius:8px}
+  nav.primary-nav{display:flex;align-items:center;gap:28px}
+  nav.primary-nav a{color:var(--text-muted);font-weight:500;font-size:.95rem}
+  nav.primary-nav a:hover{color:var(--primary);text-decoration:none}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;font-size:.95rem;padding:10px 20px;border-radius:999px;border:1px solid transparent;cursor:pointer;transition:transform .08s ease,box-shadow .15s ease,background .15s ease;white-space:nowrap}
+  .btn:hover{text-decoration:none}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-primary:hover{background:var(--primary-dark);box-shadow:0 4px 14px rgba(0,96,223,.35)}
+  .btn-secondary{background:transparent;color:var(--primary);border-color:var(--primary)}
+  .btn-secondary:hover{background:var(--primary-light)}
+  .nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px}
+  .nav-toggle svg{width:26px;height:26px}
+  .hero{padding:80px 0 64px;text-align:center;background:linear-gradient(180deg,var(--primary-light) 0%,var(--bg) 100%)}
+  .eyebrow{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--border);color:var(--primary);font-size:.85rem;font-weight:600;padding:6px 14px;border-radius:999px;margin-bottom:24px}
+  .hero h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.12;margin:0 0 20px;font-weight:800;letter-spacing:-.02em}
+  .hero p.lead{font-size:clamp(1.05rem,2vw,1.25rem);color:var(--text-muted);max-width:640px;margin:0 auto 36px}
+  .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+  .hero-note{font-size:.85rem;color:var(--text-muted)}
+  .hero-note code{background:var(--surface-alt);padding:2px 8px;border-radius:6px;font-size:.82rem}
+  .compare{background:var(--text);color:#fff;padding:18px 0}
+  .compare .container{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;text-align:center;font-size:.95rem}
+  .compare strong{color:#fff}
+  .compare .dim{color:#b7bac4}
+  section{padding:72px 0}
+  .section-head{text-align:center;max-width:680px;margin:0 auto 48px}
+  .section-head .tag{color:var(--primary);font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:10px}
+  .section-head h2{font-size:clamp(1.6rem,3.5vw,2.25rem);margin:0 0 14px;font-weight:800;letter-spacing:-.01em}
+  .section-head p{color:var(--text-muted);margin:0;font-size:1.05rem}
+  .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;transition:transform .15s ease,box-shadow .15s ease}
+  .feature-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(20,20,30,.07)}
+  .feature-icon{width:44px;height:44px;border-radius:10px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+  .feature-icon svg{width:22px;height:22px}
+  .feature-card h3{font-size:1.1rem;margin:0 0 8px;font-weight:700}
+  .feature-card p{margin:0;color:var(--text-muted);font-size:.95rem}
+  .why-section{background:var(--surface)}
+  .vs-table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:#fff}
+  table.vs-table{width:100%;border-collapse:collapse;min-width:560px;font-size:.95rem}
+  table.vs-table th,table.vs-table td{padding:14px 20px;text-align:left;border-bottom:1px solid var(--border)}
+  table.vs-table th{background:var(--surface-alt);font-weight:700}
+  table.vs-table td:not(:first-child),table.vs-table th:not(:first-child){text-align:center}
+  table.vs-table tr:last-child td{border-bottom:none}
+  .check{color:var(--success);font-weight:700}
+  .cross{color:#c23b3b;font-weight:700}
+  .dash{color:var(--text-muted)}
+  .quickstart-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+  .step{display:flex;gap:16px;margin-bottom:28px}
+  .step-num{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+  .step-body h4{margin:4px 0 8px;font-size:1.05rem}
+  .step-body p{margin:0 0 10px;color:var(--text-muted);font-size:.95rem}
+  pre.code-block{background:#1b1b24;color:#e4e6ec;border-radius:var(--radius);padding:20px 22px;overflow-x:auto;font-size:.88rem;line-height:1.6;margin:0}
+  pre.code-block .comment{color:#8b8fa3}
+  pre.code-block .cmd{color:#7ee787}
+  .quickstart-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+  .quickstart-panel h3{margin:0 0 18px;font-size:1.1rem}
+  .security-strip{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);color:#fff;text-align:center}
+  .security-strip .section-head h2,.security-strip .section-head p{color:#fff}
+  .security-strip .section-head .tag{color:#cfe0ff}
+  .badge-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
+  .badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:10px 18px;border-radius:999px;font-size:.9rem;font-weight:600}
+  .cta-section{text-align:center}
+  .cta-section h2{font-size:clamp(1.6rem,3.5vw,2.1rem);margin:0 0 14px;font-weight:800}
+  .cta-section p{color:var(--text-muted);margin:0 0 32px}
+  footer.site-footer{border-top:1px solid var(--border);padding:48px 0 32px;background:var(--surface)}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:32px}
+  .footer-brand .brand{margin-bottom:12px}
+  .footer-brand p{color:var(--text-muted);font-size:.9rem;max-width:280px}
+  .footer-col h5{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin:0 0 14px}
+  .footer-col ul{list-style:none;padding:0;margin:0}
+  .footer-col li{margin-bottom:10px}
+  .footer-col a{color:var(--text);font-size:.92rem}
+  .footer-col a:hover{color:var(--primary)}
+  .footer-bottom{border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.85rem;color:var(--text-muted)}
+  @media (max-width:860px){.features-grid{grid-template-columns:repeat(2,1fr)}.quickstart-grid{grid-template-columns:1fr}.footer-grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:640px){
+    .container{padding:0 18px}
+    nav.primary-nav{position:fixed;top:61px;left:0;right:0;background:#fff;border-bottom:1px solid var(--border);flex-direction:column;align-items:stretch;gap:0;padding:8px 18px 16px;display:none;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+    nav.primary-nav.open{display:flex}
+    nav.primary-nav a{padding:12px 0;border-bottom:1px solid var(--border)}
+    nav.primary-nav .btn{margin-top:12px;width:100%}
+    .nav-toggle{display:inline-flex}
+    .hero{padding:48px 0 40px}
+    section{padding:48px 0}
+    .features-grid{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr;gap:24px}
+    .footer-bottom{flex-direction:column;align-items:flex-start}
+    table.vs-table{font-size:.85rem}
+    .hero-ctas{flex-direction:column;align-items:center}
+    .hero-ctas .btn{width:100%;max-width:280px}
+  }
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container nav-row">
+    <a class="brand" href="#top" aria-label="GoFileBeam home">
+      <img src="../static/favicon.svg" alt="" width="32" height="32">
+      GoFileBeam
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav" aria-label="Toggle navigation menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <nav class="primary-nav" id="primaryNav">
+      <a href="#features">Features</a>
+      <a href="#why">Why GoFileBeam</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#security">Security</a>
+      <a class="btn btn-primary" href="#quickstart">Get Started</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="container">
+      <span class="eyebrow">🦊 A self-hosted alternative to the late Firefox Send</span>
+      <h1>Send files securely.<br>Without giving up control.</h1>
+      <p class="lead">GoFileBeam is an open-source, single-binary file sharing server with end-to-end encryption, automatic expiration, and a storage quota you set &mdash; so you can run your own private "Send" on your own infrastructure.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#quickstart">Quick Start →</a>
+        <a class="btn btn-secondary" href="https://github.com/your-org/gofilebeam" rel="noopener">View on GitHub</a>
+      </div>
+      <p class="hero-note">Single Go binary &middot; No database required &middot; Deploy with <code>./gofilebeam</code></p>
+    </div>
+  </section>
+
+  <div class="compare">
+    <div class="container">
+      <span>🕯️ <strong>Firefox Send shut down in 2020.</strong></span>
+      <span class="dim">GoFileBeam gives you the same simple sharing experience &mdash; self-hosted, so it's never someone else's decision to shut it down.</span>
+    </div>
+  </div>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-head">
+        <span class="tag">Features</span>
+        <h2>Everything Firefox Send did well, and more</h2>
+        <p>Built for privacy-conscious teams and individuals who want full ownership of their file sharing infrastructure.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <h3>End-to-end encryption</h3>
+          <p>Files are encrypted with AES-256-GCM before they ever touch disk. Add a password and only someone with that password can decrypt the download.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <h3>Automatic expiration</h3>
+          <p>Set links to expire after a number of downloads, a time period, or both &mdash; exactly like Firefox Send's "1 download / 1 day" style policies.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg></div>
+          <h3>Storage quota control</h3>
+          <p>Cap total disk usage at the limit you choose. GoFileBeam reports real-time usage and refuses uploads once the quota is reached.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+          <h3>Single binary</h3>
+          <p>No database, no external dependencies, no runtime to install. Build once, copy the binary anywhere, and run it.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M7 9l5-5 5 5M12 4v12"/></svg></div>
+          <h3>Drag-and-drop web UI</h3>
+          <p>A clean, built-in web interface for uploading, setting a password, picking an expiration policy, and sharing the link &mdash; no extension required.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M3 9v10a2 2 0 0 0 2 2h4m-6-12h18m-6 12h4a2 2 0 0 0 2-2V9"/></svg></div>
+          <h3>REST API</h3>
+          <p>Upload and download programmatically with a simple HTTP API &mdash; integrate GoFileBeam into scripts, CI pipelines, or other apps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="why-section" id="why">
+    <div class="container">
+      <div class="section-head">
+        <span class="tag">Why GoFileBeam</span>
+        <h2>The Firefox Send experience, minus the shutdown risk</h2>
+        <p>When Mozilla discontinued Firefox Send, it took every shared link with it. Self-hosting means that decision is always yours.</p>
+      </div>
+      <div class="vs-table-wrap">
+        <table class="vs-table">
+          <thead><tr><th scope="col">Capability</th><th scope="col">Firefox Send <span class="dash">(discontinued)</span></th><th scope="col">GoFileBeam</th></tr></thead>
+          <tbody>
+            <tr><td>Self-hosted / you own the data</td><td><span class="cross">✕</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>End-to-end encryption</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Password-protected links</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Download / time-based expiration</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Configurable storage quota</td><td><span class="dash">&mdash;</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>REST API for automation</td><td><span class="dash">&mdash;</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Open source</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Still online</td><td><span class="cross">✕ (shut down Mar 2020)</span></td><td><span class="check">✓ as long as you run it</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="quickstart">
+    <div class="container">
+      <div class="section-head">
+        <span class="tag">Quick Start</span>
+        <h2>Up and running in under 5 minutes</h2>
+        <p>Build, run, and start sharing files from your own server.</p>
+      </div>
+      <div class="quickstart-grid">
+        <div>
+          <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Build the binary</h4><p>Clone the repository and build with Go 1.19 or later.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Run the server</h4><p>Starts on <code>http://localhost:8080</code> by default, with rate limiting, brute-force protection, and sandboxing enabled out of the box.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Open the web UI</h4><p>Drag and drop a file, optionally set a password and expiration policy, and share the generated link.</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-body"><h4>(Optional) Configure for production</h4><p>Set storage path, quota, port, and HTTPS via environment variables, or run it as a systemd service.</p></div></div>
+        </div>
+        <div class="quickstart-panel">
+          <h3>Build &amp; run</h3>
+          <pre class="code-block"><span class="comment"># Build the binary</span>
+<span class="cmd">go build -o gofilebeam ./cmd/gofilebeam</span>
+
+<span class="comment"># Run it</span>
+<span class="cmd">./gofilebeam</span>
+
+<span class="comment"># Service will be live at http://localhost:8080</span></pre>
+        </div>
+      </div>
+
+      <div class="quickstart-panel" style="margin-top:32px;">
+        <h3>Upload a file via the API</h3>
+        <pre class="code-block"><span class="comment"># Upload with a password and 7-day expiration</span>
+<span class="cmd">curl -F "file=@report.pdf" \
+  -F "expiration_option=10 Downloads or 7 Days" \
+  -F "password=correct-horse-battery-staple" \
+  http://localhost:8080/api/upload</span>
+
+<span class="comment"># Download it back</span>
+<span class="cmd">curl "http://localhost:8080/api/download/&lt;file_id&gt;?password=correct-horse-battery-staple" \
+  -o report.pdf</span></pre>
+      </div>
+
+      <div style="text-align:center;margin-top:40px;">
+        <a class="btn btn-secondary" href="./QUICKSTART.md">Read the full quick start guide →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="security-strip" id="security">
+    <div class="container">
+      <div class="section-head">
+        <span class="tag">Security</span>
+        <h2>Secure by default, not by configuration</h2>
+        <p>All protections below are on from the moment you start the binary &mdash; no extra setup needed.</p>
+      </div>
+      <div class="badge-row">
+        <span class="badge">🔒 AES-256-GCM encryption</span>
+        <span class="badge">🧱 Filesystem sandbox</span>
+        <span class="badge">🚦 Rate limiting</span>
+        <span class="badge">🛑 Brute-force protection</span>
+        <span class="badge">🧭 Path traversal prevention</span>
+        <span class="badge">🧊 Automatic file expiration</span>
+      </div>
+      <div style="margin-top:36px;">
+        <a class="btn btn-primary" href="./SECURITY.md" style="background:#fff;color:var(--primary);">Read the security documentation →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <h2>Run your own Send, on your own terms</h2>
+      <p>Free, open source, and yours to keep online for as long as you want it.</p>
+      <div class="hero-ctas" style="justify-content:center;">
+        <a class="btn btn-primary" href="#quickstart">Get Started →</a>
+        <a class="btn btn-secondary" href="https://github.com/your-org/gofilebeam" rel="noopener">Star on GitHub</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#top"><img src="../static/favicon.svg" alt="" width="32" height="32">GoFileBeam</a>
+        <p>An open-source, self-hosted alternative to Firefox Send. Secure file sharing you control, end to end.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <ul><li><a href="#features">Features</a></li><li><a href="#why">Why GoFileBeam</a></li><li><a href="#security">Security</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h5>Docs</h5>
+        <ul><li><a href="./QUICKSTART.md">Quick Start</a></li><li><a href="./SECURITY.md">Security Guide</a></li><li><a href="./nginx-recommended.conf">Nginx Config</a></li></ul>
+      </div>
+      <div class="footer-col">
+        <h5>Project</h5>
+        <ul><li><a href="https://github.com/your-org/gofilebeam" rel="noopener">GitHub</a></li><li><a href="https://github.com/your-org/gofilebeam/issues" rel="noopener">Issues</a></li><li><a href="https://github.com/your-org/gofilebeam/blob/main/LICENSE" rel="noopener">MIT License</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="year">2026</span> GoFileBeam. MIT Licensed.</span>
+      <span>Not affiliated with Mozilla or Firefox Send.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('primaryNav');
+  toggle.addEventListener('click', function () {
+    var isOpen = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  nav.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+</body>
+</html>

@@ -8,6 +8,7 @@ A lightweight, secure file sharing service written in Go. Features end-to-end en
 
 - **Secure File Sharing**: Upload files with optional password protection
 - **End-to-End Encryption**: Files encrypted with AES-GCM before storage
+- **Chunked Uploads**: Large files are automatically split into small sequential requests, so no single HTTP request body needs to exceed reverse-proxy/CDN size limits (e.g. Cloudflare)
 - **Expiration Policies**: Files expire after specified downloads or time period
 - **Storage Quota**: Configurable storage limit (default: 1GB)
 - **Single Binary**: Easy deployment on any platform
@@ -57,6 +58,9 @@ Configure via environment variables:
 | `GOFILEBEAM_TLS_KEY_PATH` | TLS key path | - |
 | `GOFILEBEAM_RATE_LIMIT_PER_MINUTE` | Rate limit per minute | `60` |
 | `GOFILEBEAM_CLEANUP_INTERVAL_MINUTES` | Cleanup interval in minutes | `60` |
+| `GOFILEBEAM_CHUNK_SIZE_MB` | Size of each chunk in the chunked upload protocol | `8` |
+| `GOFILEBEAM_CHUNK_UPLOAD_THRESHOLD_MB` | Files at or above this size use chunked upload instead of a single request | `80` |
+| `GOFILEBEAM_CHUNK_SESSION_TIMEOUT_MINUTES` | How long an idle chunked upload session is kept before being discarded | `30` |
 
 Example with custom configuration:
 
@@ -79,6 +83,75 @@ Parameters:
 - expiration_option: "1 Download or 1 Day", "10 Downloads or 7 Days", or "100 Downloads or 30 Days"
 - password: Optional password for encryption
 ```
+
+This single-request endpoint is simplest, but every reverse proxy or CDN
+sitting in front of GoFileBeam enforces its own maximum request body size
+that cannot be configured away at the application level. Notably,
+**Cloudflare caps request bodies at 100 MB on Free/Pro plans, 200 MB on
+Business, and 500 MB on Enterprise** — a file that exceeds your plan's
+limit will fail with a `413` or a client-side connection reset partway
+through the upload, regardless of `GOFILEBEAM_MAX_FILE_SIZE_MB`. For files
+at or above `GOFILEBEAM_CHUNK_UPLOAD_THRESHOLD_MB`, use the chunked upload
+protocol below instead; the built-in web UI does this automatically.
+
+### Chunked Upload (for large files)
+
+Splits a file into small sequential requests so no single request body
+ever approaches a proxy/CDN size limit, regardless of total file size.
+
+```
+# 1. Initialize a session
+POST /api/upload/init
+Content-Type: application/json
+{
+  "filename": "movie.mp4",
+  "size": 734003200,
+  "expiration_option": "10 Downloads or 7 Days",
+  "password": "optional"
+}
+-> { "session_id": "...", "chunk_size": 8388608, "total_chunks": 88 }
+
+# 2. Upload each chunk (raw bytes, repeat for index 0..total_chunks-1)
+POST /api/upload/chunk?session_id={session_id}&index={index}
+Content-Type: application/octet-stream
+<raw chunk bytes, sliced from the file at index * chunk_size>
+-> { "received": 1, "bytes_received": 8388608, "total_chunks": 88 }
+
+# 3. Complete the session once all chunks are uploaded
+POST /api/upload/complete
+Content-Type: application/json
+{ "session_id": "..." }
+-> same response shape as POST /api/upload
+
+# Optional: abort and free staging disk space early
+POST /api/upload/abort
+Content-Type: application/json
+{ "session_id": "..." }
+-> 204 No Content
+```
+
+Calling `/complete` before all chunks have arrived returns `400` and is
+safe to retry once the remaining chunks are sent — the session is not
+destroyed by a premature completion attempt. Sessions left idle longer
+than `GOFILEBEAM_CHUNK_SESSION_TIMEOUT_MINUTES` are automatically discarded
+and their staged data removed.
+
+> **Known limitation:** the chunked protocol applies to a single file per
+> session. Selecting multiple files at once in the web UI still uses the
+> single-request `/api/upload` endpoint, which zips them together
+> server-side — so a large *combined* multi-file selection can still hit
+> the same proxy/CDN body size limit the chunked protocol exists to avoid.
+> If you need to share several large files, upload them individually.
+
+### Upload Configuration
+```
+GET /api/upload/config
+-> { "max_file_size": ..., "chunk_size": ..., "chunk_upload_threshold": ..., "chunked_upload_enabled": true }
+```
+
+Lets a client determine the current chunk size and threshold without
+hardcoding them, so the frontend and any custom API clients stay in sync
+with server configuration.
 
 ### Download File
 ```

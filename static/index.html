@@ -167,6 +167,9 @@
         </div>
     </div>
 
-    <script src="/js/main.js"></script>
+    <!-- ?v= cache-buster: nginx/Cloudflare cache .js for up to 1 day, so a
+         version query is required or users keep running the stale uploader
+         (which posts the whole file to /api/upload and hits the CDN 413). -->
+    <script src="/js/main.js?v=20261121b"></script>
 </body>
 </html>

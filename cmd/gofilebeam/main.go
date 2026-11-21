@@ -34,6 +34,17 @@ func main() {
 	// Create rate limiter
 	rateLimiter := security.NewRateLimiter(cfg.RateLimitPerMinute)
 	log.Printf("✓ Rate limiter initialized (%d req/min)", cfg.RateLimitPerMinute)
+
+	// Chunk uploads get their own bucket: a single large file is a burst
+	// of many chunk requests from one IP, and that burst must fit in the
+	// bucket or the upload dies with a 429 partway through. Burst covers
+	// the maximum supported file's chunk count with headroom for retries;
+	// the sustained rate still caps how fast any one IP can push data.
+	maxChunks := int((cfg.MaxFileSize + cfg.ChunkSize - 1) / cfg.ChunkSize)
+	chunkBurst := maxChunks*2 + 30
+	chunkLimiter := security.NewRateLimiterWithBurst(cfg.ChunkRateLimitPerMinute, chunkBurst, 0)
+	log.Printf("✓ Chunk upload rate limiter initialized (%d req/min, burst %d, no IP block)",
+		cfg.ChunkRateLimitPerMinute, chunkBurst)
 	
 	// Create brute force protection
 	bruteForce := security.NewBruteForceProtection()
@@ -59,7 +70,7 @@ func main() {
 	handler.SetupRoutes(mux)
 
 	// Add middleware with security
-	handlerWithMiddleware := addSecurityMiddleware(mux, cfg, rateLimiter)
+	handlerWithMiddleware := addSecurityMiddleware(mux, cfg, rateLimiter, chunkLimiter)
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
@@ -107,15 +118,31 @@ func main() {
 	log.Println("Server stopped")
 }
 
-// addSecurityMiddleware adds security middleware to the handler
-func addSecurityMiddleware(handler http.Handler, cfg *config.Config, rateLimiter *security.RateLimiter) http.Handler {
+// addSecurityMiddleware adds security middleware to the handler.
+//
+// Two limiters are used, because a chunked upload of a large file is many
+// requests from one IP in quick succession and must not be throttled by
+// the same budget that protects the rest of the API:
+//
+//   - generalLimiter: page loads, init/complete/abort, downloads, etc.
+//     Keeps the original per-IP budget (default 60/min) so casual abuse
+//     of the API surface stays limited.
+//   - chunkLimiter: only POST /api/upload/chunk. Sized so the maximum
+//     supported file (500 MB / 8 MB = 63 chunks) plus retries fits in the
+//     burst, and it never escalates to an IP block — hitting it just means
+//     "slow down briefly", not "locked out for 15 minutes mid-upload".
+func addSecurityMiddleware(handler http.Handler, cfg *config.Config, rateLimiter, chunkLimiter *security.RateLimiter) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Get client IP
 		clientIP := security.GetClientIP(r)
-		
-		// Rate limiting
-		if !rateLimiter.Allow(clientIP) {
-			log.Printf("Rate limit exceeded for IP: %s", clientIP)
+
+		// Rate limiting: chunk data goes to its own bucket.
+		limiter := rateLimiter
+		if r.Method == http.MethodPost && r.URL.Path == "/api/upload/chunk" {
+			limiter = chunkLimiter
+		}
+		if !limiter.Allow(clientIP) {
+			log.Printf("Rate limit exceeded for IP: %s on %s", clientIP, r.URL.Path)
 			http.Error(w, "Rate limit exceeded. Please try again later.", http.StatusTooManyRequests)
 			return
 		}
@@ -131,7 +158,19 @@ func addSecurityMiddleware(handler http.Handler, cfg *config.Config, rateLimiter
 			return
 		}
 
-		// Add security headers
+		// Add security headers.
+		//
+		// Ownership: these headers are set here, in the application, and
+		// are the single source of truth for this deployment. If you are
+		// running GoFileBeam behind a reverse proxy (nginx, Caddy, etc.) or
+		// Cloudflare, do NOT also set X-Content-Type-Options,
+		// X-Frame-Options, X-XSS-Protection, or Content-Security-Policy in
+		// the proxy config. Duplicate headers from two layers were
+		// observed in production (e.g. "X-Frame-Options: DENY" from the
+		// app and "X-Frame-Options: SAMEORIGIN" from nginx sent together),
+		// which is both wasteful and risks sending conflicting policies to
+		// the browser. See docs/nginx-recommended.conf for the reverse
+		// proxy config that intentionally omits these headers.
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-XSS-Protection", "1; mode=block")
